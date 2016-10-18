@@ -5,16 +5,6 @@ import createLogger from 'redux-logger'
 
 import root from './root'
 import DevTools from './DevTools'
-import sagaMonitor from './sagaMonitor'
-
-
-const sagaMiddleware = createSagaMiddleware({ sagaMonitor })
-
-function *rootSaga() {
-  yield [
-    fork(root.saga)
-  ]
-}
 
 
 export default function configureStore(initialState) {
@@ -24,14 +14,11 @@ export default function configureStore(initialState) {
       initialState,
       compose(
         applyMiddleware(
-          sagaMiddleware,
           createLogger()
         ),
         DevTools.instrument()
       )
     )
-
-    sagaMiddleware.run(rootSaga)
 
     return store
 }
