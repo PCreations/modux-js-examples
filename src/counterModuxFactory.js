@@ -6,6 +6,10 @@ const types = {
   INCREMENT: 'modux-js-example-counter/INCREMENT'
 }
 
+export const init = value => ({ value })
+
+const defaultInitialState = init(0)
+
 const getCounterSpecifications = () => ({
   actions: {
     increment(amount) {
@@ -20,7 +24,7 @@ const getCounterSpecifications = () => ({
       return state.value
     }
   },
-  initReducer(initialState = { value: 0 }) {  // initReducer receives the initialState potentially provided when instanciated this modux from inside your app
+  initReducer(initialState = defaultInitialState) {  // initReducer receives the initialState potentially provided when instanciated this modux from inside your app
     const reducer = (state = initialState, action = {}) => {
       if (action.type === types.INCREMENT) {
         return {
