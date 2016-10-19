@@ -9,7 +9,7 @@ import giViewerList from './gif-viewer-list';
 
 export default moduxFactory(context => {
   context.add(newGifCounterAndButtonModux, 'newGifCounterAndButton')
-  context.add(gifViewerModux, 'cats', initGifViewer('high five'))
+  context.add(gifViewerModux, 'gifViewer', initGifViewer('high five'))
   context.add(gifViewerPairModux, 'gifViewerPair', initGifViewerPair('jugding you', 'bored'))
   context.add(gifViewerPairPairModux, 'gifViewerPairPair', initGifViewerPairPair([
     'annoyed',
@@ -25,7 +25,7 @@ export default moduxFactory(context => {
         Button,
         Counter: NewGifCounter
       } = context.getView('newGifCounterAndButton')
-      const CatsGifViewer = context.getView('cats')
+      const GifViewer = context.getView('gifViewer')
       const GifViewerPair = context.getView('gifViewerPair')
       const GifViewerPairPair = context.getView('gifViewerPairPair')
       const GifViewerList = context.getView('gifViewerList')
@@ -39,7 +39,7 @@ export default moduxFactory(context => {
           </div>
           <h1>Random gifs</h1>
           <div>
-            <CatsGifViewer/>
+            <GifViewer/>
           </div>
           <hr/>
           <h1>Random Gif Pair</h1>
