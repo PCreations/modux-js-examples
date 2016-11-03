@@ -1,14 +1,17 @@
 import React from 'react'
 import moduxFactory from 'modux-js'
+import { take, put, select } from 'redux-saga/effects';
 
-import newGifCounterAndButtonModux from './newGifCounterAndButton';
+import buttonModux, { types as buttonTypes } from './button';
+import counterModux, { init as initCounter } from './counter';
 import gifViewerModux, { init as initGifViewer, types as gifViewerTypes } from './gif-viewer';
 import gifViewerPairModux, { init as initGifViewerPair } from './gif-viewer-pair';
 import gifViewerPairPairModux, { init as initGifViewerPairPair } from './gif-viewer-pair-pair';
 import giViewerList from './gif-viewer-list';
 
 export default moduxFactory(context => {
-  context.add(newGifCounterAndButtonModux, 'newGifCounterAndButton')
+  context.add(buttonModux, 'button')
+  context.add(counterModux, 'newGifCounter', initCounter(0))
   context.add(gifViewerModux, 'gifViewer', initGifViewer('high five'))
   context.add(gifViewerPairModux, 'gifViewerPair', initGifViewerPair('jugding you', 'bored'))
   context.add(gifViewerPairPairModux, 'gifViewerPairPair', initGifViewerPairPair([
@@ -20,11 +23,21 @@ export default moduxFactory(context => {
   ]))
   context.add(giViewerList, 'gifViewerList')
   return {
+    initSaga() {
+      function *watchForNewGif() {
+        while (true) {
+          yield take(gifViewerTypes.RECEIVE_GIF)
+          const isButtonActive = yield select(context.getSelectors('button').isActive)
+          const counterValue = yield select(context.getSelectors('newGifCounter').getValue)
+          const amount = counterValue >= 3 && isButtonActive ? 2 : 1
+          yield put(context.getActions('newGifCounter').increment(amount))
+        }
+      }
+      return watchForNewGif
+    },
     initView() {
-      const {
-        Button,
-        Counter: NewGifCounter
-      } = context.getView('newGifCounterAndButton')
+      const Button = context.getView('button')
+      const NewGifCounter = context.getView('newGifCounter')
       const GifViewer = context.getView('gifViewer')
       const GifViewerPair = context.getView('gifViewerPair')
       const GifViewerPairPair = context.getView('gifViewerPairPair')
